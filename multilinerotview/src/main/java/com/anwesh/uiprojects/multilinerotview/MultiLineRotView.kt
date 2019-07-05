@@ -34,3 +34,33 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float {
     return mirrorValue(a, b) * dir * scGap
 }
+
+fun Canvas.drawRotLine(i : Int, sc : Float, rot : Float, size : Float, paint : Paint) {
+    save()
+    rotate(rot * sc.divideScale(i, lines) * (1f - 2 * i))
+    drawLine(0f, 0f, 0f, -size, paint)
+    restore()
+}
+
+fun Canvas.drawRotLines(sc : Float, rot : Float, size : Float, paint : Paint) {
+    for (j in 0..(lines - 1)) {
+        drawRotLine(j, sc, rot, size, paint)
+    }
+}
+
+fun Canvas.drawMLRNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = h / (nodes + 1)
+    val size : Float = gap / sizeFactor
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
+    save()
+    translate(w / 2, gap * (i + 1))
+    drawRotLines(sc1, sweepDeg1, size, paint)
+    drawRotLines(sc2, sweepDeg2, size, paint)
+    restore()
+}
